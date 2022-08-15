@@ -1,0 +1,6 @@
+MOV PSW, #00h
+MOV A, #02h ;load value 2H into reg.A
+MOV R0,A ;copy contents of A into R0
+MOV R1,A ;copy contents of A into R1
+MOV R3, #03h ;load value 3 imto r3
+END
