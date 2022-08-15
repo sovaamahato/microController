@@ -1,0 +1,17 @@
+
+MOV PSW, #00h
+MOV A, #06h ;load value 2H into reg.A
+
+MOV B, #03h ;load value 3 imto r3
+ADD A,B
+MOV R0,A
+MOV A,#06
+SUBB A, B
+MOV R1, A
+MOV A,#06
+DIV AB
+MOV R2,A
+MOV A,#06
+MUL AB
+MOV R3,A
+END
