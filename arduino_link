@@ -1,3 +1,4 @@
+1) project 1
 https://www.youtube.com/watch?v=1LUj7gRxcqU
 
 //Materials required
@@ -64,6 +65,14 @@ digitalWrite(GreenpinUnlock, HIGH);
 ServoMotor.write(90);
 }
 }
-
+2)project 2
 another project link
 https://www.youtube.com/watch?v=SvDT_PzgEoE
+
+3)project 3
+
+https://www.youtube.com/watch?v=WgsTyhX311E
+hi in this video i have shown how to make a Homework writing machine also known as a 2D Plotter. this machine can be used with any pen, pencil, or other drawing tool to write on a paper or any notebook for works such as drawing, sketching, caligraphy, art, etc.
+
+It uses an arduino and a CNC shield along with stepper motors and stepper motor drivers to enable the movement in x and y axis. i have used aluimnium profiles and 3d printed plates to provide structure to the machine. i have used belts and pulleys for linear motion from the motors to the plates. for power supply i have used a 12v 2A power adapter. after powering the machine, you will have to connect it to a computer and use universal gcode sender software to send the gcodes to the machine. you can take any text or image file in inkscape and convert it into a gcode in very few and 
+simple steps. once the gcode is ready, open it in the universal gcode sender, connect the COM port of the arduino and you can start executing the file. you can also change the speed and acceleration of the machine in the firmware settings menu under the machine tab of the universal gcode sender software. 
