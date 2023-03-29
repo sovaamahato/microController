@@ -1,71 +1,135 @@
-#include <LiquidCrystal.h>// initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(A0, A1, A2, A3, A4, A5);
-#include <Servo.h> //includes the servo library
+#include <LiquidCrystal.h>
 
-Servo myservo1;
+// initialize LCD display
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-int ir_s1 = 2;
-int ir_s2 = 4;
+// initialize IR sensors
+int irIn = 6;   // IR sensor for car entering
+int irOut = 7;  // IR sensor for car exiting
+int ir1 = 8;    // IR sensor for parking slot 1
+int ir2 = 9;    // IR sensor for parking slot 2
+int ir3 = 10;   // IR sensor for parking slot 3
+int ir4 = 11;   // IR sensor for parking slot 4
 
-int Total = 5;
-int Space;
+// initialize servo motor
+#include <Servo.h>
+Servo servo;
+int servoPin = 13;  // servo motor pin
 
-int flag1 = 0;
-int flag2 = 0;
+// initialize parking slots
+int slot1 = 0;
+int slot2 = 0;
+int slot3 = 0;
+int slot4 = 0;
 
 void setup() {
-pinMode(ir_s1, INPUT);
-pinMode(ir_s2, INPUT);
+  // initialize LCD display
+  lcd.begin(16, 2);
+  lcd.print("Available Slots:");
   
-myservo1.attach(3);
-myservo1.write(100);
-
-lcd.begin(16, 2);  
-lcd.setCursor (0,0);
-lcd.print("  Car  Parking  ");
-lcd.setCursor (0,1);
-lcd.print("     System     ");
-delay (2000);
-lcd.clear();  
-
-Space = Total;
+  // initialize IR sensors
+  pinMode(irIn, INPUT);
+  pinMode(irOut, INPUT);
+  pinMode(ir1, INPUT);
+  pinMode(ir2, INPUT);
+  pinMode(ir3, INPUT);
+  pinMode(ir4, INPUT);
+  
+  // initialize servo motor
+  servo.attach(servoPin);
 }
 
-void loop(){ 
+void loop() {
+  // read IR sensors
+  int in = digitalRead(irIn);
+  int out = digitalRead(irOut);
+  int sensor1 = digitalRead(ir1);
+  int sensor2 = digitalRead(ir2);
+  int sensor3 = digitalRead(ir3);
+  int sensor4 = digitalRead(ir4);
 
-if(digitalRead (ir_s1) == LOW && flag1==0){
-if(Space>0){flag1=1;
-if(flag2==0){myservo1.write(0); Space = Space-1;}
-}else{
-lcd.setCursor (0,0);
-lcd.print(" Sorry not Space ");  
-lcd.setCursor (0,1);
-lcd.print("    Available    "); 
-delay (1000);
-lcd.clear(); 
+  // check if car enters
+  if (in == HIGH) {
+    servo.write(90);  // servo motor lifts the toll gate
+    delay(1000);      // wait for the car to enter
+    servo.write(0);   // servo motor lowers the toll gate
+    
+    // update available slots
+    if (slot1 == 0) {
+      slot1 = 1;
+    }
+    else if (slot2 == 0) {
+      slot2 = 1;
+    }
+    else if (slot3 == 0) {
+      slot3 = 1;
+    }
+    else if (slot4 == 0) {
+      slot4 = 1;
+    }
+  }
+
+  // check if car exits
+  if (out == HIGH) {
+    servo.write(90);  // servo motor lifts the toll gate
+    delay(1000);      // wait for the car to exit
+    servo.write(0);   // servo motor lowers the toll gate
+    
+    // update available slots
+    if (slot1 == 1) {
+      slot1 = 0;
+    }
+    else if (slot2 == 1) {
+      slot2 = 0;
+    }
+    else if (slot3 == 1) {
+      slot3 = 0;
+    }
+    else if (slot4 == 1) {
+      slot4 = 0;
+    }
+  }
+
+  // display available slots on LCD
+  int availableSlots = slot1 + slot2 + slot3 + slot4;
+  lcd.setCursor(0, 1);
+  lcd.print(availableSlots);
+  
+  if (availableSlots == 0) {
+    lcd.print(" PARKING FULL  ");
+  }
+  
+  // delay for stability
+  delay(100);
 }
-}
-
-if(digitalRead (ir_s2) == LOW && flag2==0){flag2=1;
-if(flag1==0){myservo1.write(0); Space = Space+1;}
-}
-
-if(flag1==1 && flag2==1){
-delay (1000);
-myservo1.write(100);
-flag1=0, flag2=0;
-}
 
 
+steps to connect wires
+Connecting the LCD:
 
+Connect the VSS pin of the LCD to GND.
+Connect the VDD and V0 pins of the LCD to +5V.
+Connect the RW pin of the LCD to GND (since we are only writing to the LCD).
+Connect the RS, E, D4, D5, D6, and D7 pins of the LCD to digital pins 12, 11, 5, 4, 3, and 2 respectively.
+Connecting the Servo:
 
-//https://www.youtube.com/watch?v=0i-9_aK2f-Y&t=97s&ab_channel=MuhammadAnsar
+Connect the red wire of the servo to +5V on the Arduino.
+Connect the black wire of the servo to GND on the Arduino.
+Connect the yellow wire of the servo to digital pin 13 on the Arduino.
+Make sure to also connect the IR sensors to the Arduino according to the pin assignments in the code.
 
-lcd.setCursor (0,0);
-lcd.print("Total Space: ");
-lcd.print(Total);
+Once everything is connected, you can upload the code to your Arduino and test the parking system.
 
-lcd.setCursor (0,1);
-lcd.print("Have  Space: ");
-lcd.print(Space);
-}
+Sure, here's how you can connect the IR sensors to your Arduino:
+
+Connect the VCC pin of each IR sensor to +5V on the Arduino.
+Connect the GND pin of each IR sensor to GND on the Arduino.
+Connect the OUT pin of each IR sensor to a digital pin on the Arduino.
+In the code provided, the IR sensor for car entering is connected to pin 6, and the IR sensor for car exiting is connected to pin 7. The IR sensors for parking slots 1 to 4 are connected to pins 8 to 11 respectively.
+
+So, for example, to connect an IR sensor to pin 8 on your Arduino, you would:
+
+Connect the VCC pin of the IR sensor to +5V on the Arduino.
+Connect the GND pin of the IR sensor to GND on the Arduino.
+Connect the OUT pin of the IR sensor to digital pin 8 on the Arduino.
+Repeat these steps for each IR sensor you want to connect, making sure to connect the VCC and GND pins of each sensor to the correct power and ground pins on the Arduino.
